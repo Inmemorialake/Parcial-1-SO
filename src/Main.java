@@ -5,12 +5,19 @@ import java.nio.file.*;
 public class Main {
     public static void main(String[] args) {
         try {
-            // === Cargar archivo de entrada ===
-            String defaultInput = "mlq001.txt"; // Cambiar por el archivo deseado
-            String inputArg = (args != null && args.length > 0) ? args[0] : defaultInput;
+            // === Cargar archivo de entrada desde argumentos ===
+            if (args == null || args.length == 0) {
+                System.err.println("Uso: java Main <archivo_entrada>");
+                return;
+            }
+            String inputArg = args[0];
             Path inputPath = resolverRutaEntrada(inputArg);
 
-            String outputFile = "out.txt"; // Archivo de salida
+            // === Generar nombre de archivo de salida dinámicamente ===
+            String inputFileName = inputPath.getFileName().toString();
+            String outputFile = "solved_" + inputFileName;
+
+            // === Leer procesos del archivo de entrada ===
             Map<Integer, List<Process>> colas = leerProcesos(inputPath);
 
             // === Configurar estrategias ===
@@ -23,6 +30,8 @@ public class Main {
             // === Ejecutar MLQ ===
             MLQScheduler mlq = new MLQScheduler(estrategias);
             mlq.ejecutar(colas, outputFile);
+
+            System.out.println("Procesamiento completo. Archivo de salida: " + outputFile);
 
         } catch (Exception e) {
             e.printStackTrace();
