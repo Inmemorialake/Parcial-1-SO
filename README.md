@@ -16,7 +16,7 @@ java -cp src Main
 El archivo de entrada (mlq001.txt) debe estar en la raíz del proyecto.
 El resultado se genera en out.txt.
 
-Video de demostración
+## Video de demostración
 Enlace al video [Video sustentación](https://youtu.be/hlf7ez7I2h0)
 
 Proyecto realizado por Gerardo González
