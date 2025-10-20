@@ -19,5 +19,8 @@ El resultado se genera en out.txt.
 ## Video de demostración
 Enlace al video [Video sustentación](https://youtu.be/hlf7ez7I2h0)
 
+## Informe
+Ver [informe](Informe.md)
+
 Proyecto realizado por Gerardo González
 Curso: Sistemas Operativos — Universidad del Valle (2025-II)
