@@ -9,28 +9,62 @@ public class RR implements Planificador {
 
     @Override
     public void ejecutar(List<Process> procesos) {
-        Queue<Process> cola = new LinkedList<>(procesos);
+        // Ordenar inicialmente por tiempo de llegada
+        procesos.sort(Comparator.comparingInt(Process::getArrivalTime));
+
+        Deque<Process> ready = new ArrayDeque<>();
+        int n = procesos.size();
+        int completados = 0;
         int tiempo = 0;
+        int idx = 0; // índice de próximos procesos por llegar
 
-        while (!cola.isEmpty()) {
-            Process p = cola.poll();
+        // Encolar los que ya llegaron al tiempo inicial
+        while (idx < n && procesos.get(idx).getArrivalTime() <= tiempo) {
+            ready.addLast(procesos.get(idx));
+            idx++;
+        }
 
-            if (!p.isStarted()) {
-                p.setResponseTime(tiempo - p.getArrivalTime());
-                p.setStarted(true);
-            }
-
-            if (p.getRemainingTime() > quantum) {
-                tiempo += quantum;
-                p.setRemainingTime(p.getRemainingTime() - quantum);
-                cola.offer(p);
+        while (completados < n) {
+            if (ready.isEmpty()) {
+                // Avanzar tiempo al próximo arribo si no hay listos
+                if (idx < n) {
+                    tiempo = Math.max(tiempo, procesos.get(idx).getArrivalTime());
+                    // Encolar los que ya llegaron tras avanzar el tiempo
+                    while (idx < n && procesos.get(idx).getArrivalTime() <= tiempo) {
+                        ready.addLast(procesos.get(idx));
+                        idx++;
+                    }
+                    continue;
+                }
             } else {
-                tiempo += p.getRemainingTime();
-                p.setRemainingTime(0);
-                p.setCompletionTime(tiempo);
-                p.setTurnaroundTime(p.getCompletionTime() - p.getArrivalTime());
-                p.setWaitingTime(p.getTurnaroundTime() - p.getBurstTime());
-                p.setCompleted(true);
+                Process p = ready.removeFirst();
+
+                if (!p.isStarted()) {
+                    p.setResponseTime(tiempo - p.getArrivalTime());
+                    p.setStarted(true);
+                }
+
+                int slice = Math.min(quantum, p.getRemainingTime());
+                tiempo += slice;
+                p.setRemainingTime(p.getRemainingTime() - slice);
+
+                // Encolar procesos que llegaron durante este slice
+                while (idx < n && procesos.get(idx).getArrivalTime() <= tiempo) {
+                    ready.addLast(procesos.get(idx));
+                    idx++;
+                }
+
+                if (p.getRemainingTime() > 0) {
+                    // Todavía le falta CPU, vuelve al final
+                    ready.addLast(p);
+                } else {
+                    // Proceso finalizado, calcular métricas
+                    p.setCompletionTime(tiempo);
+                    p.setTurnaroundTime(p.getCompletionTime() - p.getArrivalTime());
+                    p.setWaitingTime(p.getTurnaroundTime() - p.getBurstTime());
+                    p.setCompleted(true);
+                    completados++;
+                }
             }
         }
     }

@@ -1,13 +1,17 @@
 import java.io.*;
 import java.util.*;
+import java.nio.file.*;
 
 public class Main {
     public static void main(String[] args) {
         try {
             // === Cargar archivo de entrada ===
-            String inputFile = "mlq001.txt";
-            String outputFile = "mlq001_out.txt";
-            Map<Integer, List<Process>> colas = leerProcesos(inputFile);
+            String defaultInput = "mlq001.txt"; // Cambiar por el archivo deseado
+            String inputArg = (args != null && args.length > 0) ? args[0] : defaultInput;
+            Path inputPath = resolverRutaEntrada(inputArg);
+
+            String outputFile = "out.txt"; // Archivo de salida
+            Map<Integer, List<Process>> colas = leerProcesos(inputPath);
 
             // === Configurar estrategias ===
             Map<Integer, Planificador> estrategias = Map.of(
@@ -25,9 +29,30 @@ public class Main {
         }
     }
 
-    private static Map<Integer, List<Process>> leerProcesos(String archivo) throws IOException {
+    private static Path resolverRutaEntrada(String fileName) throws FileNotFoundException {
+        String wd = System.getProperty("user.dir");
+        List<String> candidatos = List.of(
+                fileName,
+                "./" + fileName,
+                "src/" + fileName,
+                "../" + fileName,
+                "../src/" + fileName,
+                "../../" + fileName,
+                "../../src/" + fileName
+        );
+        for (String c : candidatos) {
+            Path p = Paths.get(c).normalize();
+            if (Files.exists(p)) {
+                return p.toAbsolutePath();
+            }
+        }
+        throw new FileNotFoundException(fileName + " no encontrado. Directorio de trabajo: " + wd +
+                ". Prueba pasando la ruta absoluta o relativa como argumento, p.ej.: ./src/" + fileName);
+    }
+
+    private static Map<Integer, List<Process>> leerProcesos(Path archivo) throws IOException {
         Map<Integer, List<Process>> colas = new HashMap<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+        try (BufferedReader br = Files.newBufferedReader(archivo)) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (linea.startsWith("#") || linea.trim().isEmpty()) continue;

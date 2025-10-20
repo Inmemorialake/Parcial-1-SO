@@ -11,11 +11,20 @@ public class MLQScheduler {
     public void ejecutar(Map<Integer, List<Process>> colas, String outputFile) throws IOException {
         List<Process> resultados = new ArrayList<>();
 
-        for (int nivel : estrategias.keySet()) {
+        // Obtener las colas presentes en la entrada y ordenarlas para ejecución determinística
+        List<Integer> niveles = new ArrayList<>(colas.keySet());
+        Collections.sort(niveles);
+
+        for (int nivel : niveles) {
             Planificador plan = estrategias.get(nivel);
+            if (plan == null) {
+                throw new IllegalArgumentException("No hay estrategia configurada para la cola " + nivel);
+            }
+
             List<Process> lista = colas.get(nivel);
             if (lista != null && !lista.isEmpty()) {
-                System.out.println("\n=== Ejecutando Cola " + nivel + " ===");
+                System.out.println("\n=== Ejecutando Cola " + nivel + " con " + plan.getClass().getSimpleName() +
+                        " (" + lista.size() + " procesos) ===");
                 plan.ejecutar(lista);
                 resultados.addAll(lista);
             }
