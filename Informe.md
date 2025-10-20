@@ -1,4 +1,3 @@
-```markdown
 # Informe Parcial Práctico – Sistemas Operativos
 ## Multilevel Queue Scheduler (MLQ)
 
@@ -49,7 +48,6 @@ El programa lee un archivo de entrada (`mlq00X.txt`), simula la ejecución de lo
 
 ### **Caso 1 – mlq001.txt**
 **Entrada:**
-```
 
 # etiqueta; BT; AT; Q; P
 
@@ -59,10 +57,8 @@ C; 10; 0; 2; 3
 D; 15; 0; 2; 3
 E; 8; 0; 3; 2
 
-```
-
 **Salida:**
-```
+
 
 # etiqueta; BT; AT; Q; P; WT; CT; RT; TAT
 
@@ -73,13 +69,11 @@ D;15;0;2;3;10;25;3;25
 E;8;0;3;2;0;8;0;8
 WT=6.00; CT=15.60; RT=0.80; TAT=15.60
 
-```
-
 ---
 
 ### **Caso 2 – mlq002.txt**
 **Entrada:**
-```
+
 
 # Archivo: mlq002.txt
 
@@ -91,10 +85,8 @@ p3; 15; 4; 2; 3
 p4; 5; 6; 3; 2
 p5; 8; 8; 3; 1
 
-```
-
 **Salida:**
-```
+
 
 # etiqueta; BT; AT; Q; P; WT; CT; RT; TAT
 
@@ -105,13 +97,10 @@ p4;5;6;3;2;2;11;0;11
 p5;8;8;3;1;1;9;0;9
 WT=8.00; CT=20.80; RT=0.60; TAT=20.40
 
-```
-
 ---
 
 ### **Caso 3 – mlq003.txt**
 **Entrada:**
-```
 
 # Archivo: mlq003.txt
 
@@ -123,11 +112,8 @@ p3; 18; 3; 2; 3
 p4; 25; 5; 3; 2
 p5; 10; 7; 3; 1
 
-```
-
 **Salida:**
 
-```
 # etiqueta; BT; AT; Q; P; WT; CT; RT; TAT
 
 p1;30;0;1;5;27;57;0;57
@@ -136,7 +122,6 @@ p3;18;3;2;3;11;29;2;29
 p4;25;5;3;2;3;28;0;28
 p5;10;7;3;1;2;12;0;12
 WT=10.60; CT=29.60; RT=0.40; TAT=29.60
-```
 
 ---
 
